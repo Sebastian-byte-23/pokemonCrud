@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Editar Pokémon</title>
+    <!-- Agregar Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+</head>
+
+<body class="bg-gray-100 font-sans leading-normal tracking-normal">
+    <div class="container mx-auto p-6">
+        <h1 class="text-3xl font-bold text-center mb-6">Editar Pokémon: {{ pokemon.name }}</h1>
+
+        <!-- Formulario para editar Pokémon -->
+        <form method="POST" class="bg-white p-6 rounded-lg shadow-md max-w-md mx-auto">
+            <div class="mb-4">
+                <label for="name" class="block text-lg font-medium text-gray-700">Nombre:</label>
+                <input type="text" id="name" name="name" value="{{ pokemon.name }}" required
+                    class="w-full px-4 py-2 mt-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500">
+            </div>
+
+            <div class="mb-4">
+                <label for="type" class="block text-lg font-medium text-gray-700">Tipo:</label>
+                <input type="text" id="type" name="type" value="{{ pokemon.type }}" required
+                    class="w-full px-4 py-2 mt-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500">
+            </div>
+
+            <div class="mb-4">
+                <label for="height" class="block text-lg font-medium text-gray-700">Altura:</label>
+                <input type="number" id="height" name="height" value="{{ pokemon.height }}" required
+                    class="w-full px-4 py-2 mt-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500">
+            </div>
+
+            <div class="mb-4">
+                <label for="weight" class="block text-lg font-medium text-gray-700">Peso:</label>
+                <input type="number" id="weight" name="weight" value="{{ pokemon.weight }}" required
+                    class="w-full px-4 py-2 mt-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500">
+            </div>
+
+            <div class="flex justify-center">
+                <button type="submit"
+                    class="bg-blue-500 text-white px-6 py-2 rounded hover:bg-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-500">
+                    Guardar cambios
+                </button>
+            </div>
+        </form>
+
+        <!-- Volver a la lista -->
+        <div class="flex justify-center mt-4">
+            <a href="{{ url_for('index') }}"
+                class="text-blue-500 hover:underline focus:outline-none focus:ring-2 focus:ring-blue-500">Volver a la
+                lista</a>
+        </div>
+    </div>
+</body>
+
+</html>
