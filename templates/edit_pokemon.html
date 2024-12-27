@@ -14,7 +14,7 @@
         <h1 class="text-3xl font-bold text-center mb-6">Editar Pokémon: {{ pokemon.name }}</h1>
 
         <!-- Formulario para editar Pokémon -->
-        <form method="POST" class="bg-white p-6 rounded-lg shadow-md max-w-md mx-auto">
+        <form method="POST" class="bg-white p-6 rounded-lg shadow-md max-w-md mx-auto" enctype="multipart/form-data">
             <div class="mb-4">
                 <label for="name" class="block text-lg font-medium text-gray-700">Nombre:</label>
                 <input type="text" id="name" name="name" value="{{ pokemon.name }}" required
@@ -38,6 +38,20 @@
                 <input type="number" id="weight" name="weight" value="{{ pokemon.weight }}" required
                     class="w-full px-4 py-2 mt-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500">
             </div>
+            {% if pokemon.image_url %}
+            <div class="mb-4">
+                <label class="block text-lg font-medium text-gray-700">Imagen Actual:</label>
+                <img src="{{ pokemon.image_url }}" alt="Imagen de {{ pokemon.name }}"
+                    class="w-32 h-32 object-cover mt-2">
+            </div>
+            {% else %}
+            <p>No hay imagen disponible.</p>
+            {% endif %}
+            <div class="mb-4">
+                <label for="image" class="block text-lg font-medium text-gray-700">Imagen (Opcional):</label>
+                <input type="file" id="image" name="image"
+                    class="w-full px-4 py-2 mt-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500">
+            </div>
 
             <div class="flex justify-center">
                 <button type="submit"
@@ -45,13 +59,18 @@
                     Guardar cambios
                 </button>
             </div>
+
+
+
         </form>
+
 
         <!-- Volver a la lista -->
         <div class="flex justify-center mt-4">
             <a href="{{ url_for('index') }}"
                 class="text-blue-500 hover:underline focus:outline-none focus:ring-2 focus:ring-blue-500">Volver a la
                 lista</a>
+
         </div>
     </div>
 </body>

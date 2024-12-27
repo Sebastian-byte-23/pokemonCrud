@@ -7,71 +7,40 @@
     <title>Lista de Pokémon</title>
     <!-- Incluir Tailwind CSS -->
     <script src="https://cdn.tailwindcss.com"></script>
-    <script>
-        // Función para realizar la búsqueda sin recargar la página
-        function searchPokemons() {
-            const searchInput = document.getElementById("searchInput").value; // Obtener el valor de búsqueda
-            const url = `/?search=${searchInput}`; // Crear la URL con el parámetro de búsqueda
-
-            // Realizar la solicitud AJAX usando fetch
-            fetch(url, { method: 'GET', headers: { 'X-Requested-With': 'XMLHttpRequest' } })
-                .then(response => response.json())
-                .then(data => {
-                    const pokemons = data.pokemons;
-                    const tableBody = document.getElementById("pokemonTableBody");
-                    tableBody.innerHTML = ''; // Limpiar la tabla antes de agregar los resultados
-
-                    pokemons.forEach(pokemon => {
-                        const row = document.createElement("tr");
-
-                        row.innerHTML = `
-                            <td class="border-b p-2 text-center">${pokemon.id}</td>
-                            <td class="border-b p-2">${pokemon.name}</td>
-                            <td class="border-b p-2">${pokemon.type}</td>
-                            <td class="border-b p-2">${pokemon.height}</td>
-                            <td class="border-b p-2">${pokemon.weight}</td>
-                            <td class="border-b p-2 text-center">
-                                <a href="/edit_pokemon/${pokemon.id}" class="text-blue-500 hover:text-blue-700">Editar</a> |
-                                <a href="/delete_pokemon/${pokemon.id}" 
-                                   onclick="return confirm('¿Estás seguro de eliminar este Pokémon?')" 
-                                   class="text-red-500 hover:text-red-700">Eliminar</a>
-                            </td>
-                        `;
-                        tableBody.appendChild(row);
-                    });
-                })
-                .catch(error => console.error('Error fetching data:', error));
-        }
-    </script>
+    <!-- Incluir Font Awesome para los iconos -->
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" rel="stylesheet">
 </head>
 
 <body class="bg-gray-100 p-6">
 
     <h1 class="text-3xl font-bold mb-6 text-center">Lista de Pokémon</h1>
-
-    <!-- Botón para agregar un nuevo Pokémon -->
-    <div class="mb-4 text-center">
+    <br>
+    <!-- Contenedor para el botón y el formulario de búsqueda -->
+    <div class="mb-6 flex justify-between items-center w-[800px] mx-auto">
+        <!-- Botón para agregar un nuevo Pokémon -->
         <a href="{{ url_for('add_pokemon') }}">
-            <button class="bg-blue-500 text-white px-6 py-2 rounded-lg hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-600">Agregar Pokémon</button>
+            <button
+                class="bg-blue-500 text-white px-6 py-2 rounded-lg hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-600">
+                Agregar Pokémon
+            </button>
         </a>
-    </div>
 
-    <!-- Formulario de búsqueda -->
-    <div class="mb-6 text-center">
+        <!-- Formulario de búsqueda -->
         <input type="text" id="searchInput" class="p-2 border border-gray-300 rounded-lg w-2/3 md:w-1/2 lg:w-1/3"
             placeholder="Buscar Pokémon por nombre o tipo" oninput="searchPokemons()" />
     </div>
 
     <!-- Tabla para mostrar los Pokémon -->
-    <table class="mt-4 border-collapse w-full bg-white shadow-lg rounded-lg">
+    <table class="mt-4 border-collapse w-[800px] mx-auto bg-white shadow-lg rounded-lg">
         <thead>
             <tr class="bg-blue-100 text-left">
-                <th class="border-b p-3">Id</th>
-                <th class="border-b p-3">Nombre</th>
-                <th class="border-b p-3">Tipo</th>
-                <th class="border-b p-3">Altura</th>
-                <th class="border-b p-3">Peso</th>
-                <th class="border-b p-3">Acciones</th>
+                <th class="border-b p-3 cursor-pointer" onclick="loadPokemons(1, 'id')">Id</th>
+                <th class="border-b p-3 cursor-pointer" onclick="loadPokemons(1, 'name')">Nombre</th>
+                <th class="border-b p-3 cursor-pointer" onclick="loadPokemons(1, 'type')">Tipo</th>
+                <th class="border-b p-3 cursor-pointer" onclick="loadPokemons(1, 'height')">Altura</th>
+                <th class="border-b p-3 cursor-pointer" onclick="loadPokemons(1, 'weight')">Peso</th>
+                <th class="border-b p-3 text-center">Imagen</th>
+                <th class="border-b p-3 text-center">Acciones</th>
             </tr>
         </thead>
         <tbody id="pokemonTableBody">
@@ -82,16 +51,100 @@
                 <td class="border-b p-3">{{ pokemon.type }}</td>
                 <td class="border-b p-3">{{ pokemon.height }}</td>
                 <td class="border-b p-3">{{ pokemon.weight }}</td>
+                <!-- Mostrar la imagen pequeña del Pokémon -->
                 <td class="border-b p-3 text-center">
-                    <a href="{{ url_for('edit_pokemon', id=pokemon.id) }}" class="text-blue-500 hover:text-blue-700">Editar</a> |
-                    <a href="{{ url_for('delete_pokemon', id=pokemon.id) }}" 
-                       onclick="return confirm('¿Estás seguro de eliminar este Pokémon?')" 
-                       class="text-red-500 hover:text-red-700">Eliminar</a>
+                    <img src="{{ pokemon.image_url }}" alt="{{ pokemon.name }}"
+                        class="w-12 h-12 object-cover rounded-full">
+                </td>
+                <td class="border-b p-3 text-center">
+                    <!-- Iconos de acciones: Editar y Eliminar -->
+                    <a href="{{ url_for('edit_pokemon', id=pokemon.id) }}" class="text-blue-500 hover:text-blue-700">
+                        <i class="fas fa-edit"></i> <!-- Icono de editar -->
+                    </a>
+                    |
+                    <a href="{{ url_for('delete_pokemon', id=pokemon.id) }}"
+                        onclick="return confirm('¿Estás seguro de eliminar este Pokémon?')" 
+                        class="text-red-500 hover:text-red-700">
+                        <i class="fas fa-trash-alt"></i> <!-- Icono de eliminar -->
+                    </a>
                 </td>
             </tr>
             {% endfor %}
         </tbody>
     </table>
+
+    <!-- Contenedor de la paginación -->
+    <div id="pagination" class="mt-4 text-center"></div>
+
+    <script>
+        let currentPage = 1;
+
+        // Función para cargar Pokémon de una página específica
+        function loadPokemons(page = 1) {
+            const searchInput = document.getElementById("searchInput").value; // Valor de búsqueda
+            const url = `/?page=${page}&search=${searchInput}`; // URL con parámetros
+
+            // Solicitud AJAX para obtener los datos
+            fetch(url, { method: 'GET', headers: { 'X-Requested-With': 'XMLHttpRequest' } })
+                .then(response => response.json())
+                .then(data => {
+                    const pokemons = data.pokemons;
+                    const totalPages = data.total_pages;
+                    const tableBody = document.getElementById("pokemonTableBody");
+                    const pagination = document.getElementById("pagination");
+
+                    // Actualizar la tabla con los Pokémon
+                    tableBody.innerHTML = '';
+                    pokemons.forEach(pokemon => {
+                        const row = document.createElement("tr");
+
+                        row.innerHTML = `
+                        <td class="border-b p-2 text-center">${pokemon.id}</td>
+                        <td class="border-b p-2">${pokemon.name}</td>
+                        <td class="border-b p-2">${pokemon.type}</td>
+                        <td class="border-b p-2">${pokemon.height}</td>
+                        <td class="border-b p-2">${pokemon.weight}</td>
+                        <td class="border-b p-2 text-center">
+                            <img src="${pokemon.image_url}" alt="${pokemon.name}"
+                                class="w-12 h-12 object-cover rounded-full inline-block">
+                        </td>
+                        <td class="border-b p-2 text-center">
+                            <a href="/edit_pokemon/${pokemon.id}">
+                                <i class="fas fa-edit text-blue-500 hover:text-blue-700"></i>
+                            </a> |
+                            <a href="/delete_pokemon/${pokemon.id}" 
+                               onclick="return confirm('¿Estás seguro de eliminar este Pokémon?')" 
+                               class="text-red-500 hover:text-red-700">
+                                <i class="fas fa-trash-alt"></i>
+                            </a>
+                        </td>
+                    `;
+                        tableBody.appendChild(row);
+                    });
+
+                    // Actualizar la paginación
+                    pagination.innerHTML = '';
+                    for (let i = 1; i <= totalPages; i++) {
+                        const button = document.createElement("button");
+                        button.textContent = i;
+                        button.className = `px-3 py-1 mx-1 ${i === page ? 'bg-blue-500 text-white' : 'bg-gray-200'} rounded hover:bg-blue-700`;
+                        button.onclick = () => loadPokemons(i);
+                        pagination.appendChild(button);
+                    }
+
+                    currentPage = page; // Actualizar página actual
+                })
+                .catch(error => console.error('Error fetching data:', error));
+        }
+
+        // Función para buscar Pokémon
+        function searchPokemons() {
+            loadPokemons(1); // Reiniciar a la primera página
+        }
+
+        // Cargar la primera página al iniciar
+        document.addEventListener("DOMContentLoaded", () => loadPokemons());
+    </script>
 
 </body>
 
